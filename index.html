@@ -3,61 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Bot</title>
+    <title>Telegram Bot on GitHub Pages</title>
+    <meta name="description" content="A Telegram bot hosted on GitHub Pages">
+    <meta name="keywords" content="Telegram bot, GitHub Pages, Likhon Explorer">
+    <meta name="author" content="Likhon Explorer">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Telegram Bot on GitHub Pages">
+    <meta name="twitter:description" content="A Telegram bot hosted on GitHub Pages">
+    <meta name="twitter:image" content="https://likhonexplorer.github.io/telegram-bot-on-pages/logo.png">
+    <link rel="icon" href="https://likhonexplorer.github.io/telegram-bot-on-pages/logo.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
         }
-
-        #bot-container {
-            width: 50%;
+       .container {
+            max-width: 800px;
             margin: 40px auto;
             padding: 20px;
+            background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        #start-btn {
-            background-color: #4CAF50;
+       .header {
+            background-color: #333;
             color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            padding: 10px;
+            text-align: center;
         }
-
-        #start-btn:hover {
-            background-color: #3e8e41;
+       .header h1 {
+            margin: 0;
+            font-weight: 600;
+        }
+       .content {
+            padding: 20px;
+        }
+       .content h2 {
+            margin-top: 0;
+        }
+       .content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+       .content li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+       .content li:last-child {
+            border-bottom: none;
+        }
+       .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            clear: both;
+        }
+        @media only screen and (max-width: 768px) {
+           .container {
+                margin: 20px auto;
+            }
+        }
+        @media only screen and (max-width: 480px) {
+           .container {
+                margin: 10px auto;
+            }
+           .header {
+                padding: 5px;
+            }
+           .content {
+                padding: 10px;
+            }
+           .footer {
+                padding: 5px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Telegram Bot</h1>
-    <button id="start-btn">Start Bot</button>
-    <div id="bot-container"></div>
-    <div id="logs"></div>
-
+    <div class="container">
+        <div class="header">
+            <h1>Telegram Bot on GitHub Pages</h1>
+        </div>
+        <div class="content">
+            <h2>Introduction</h2>
+            <p>This is a Telegram bot hosted on GitHub Pages.</p>
+            <h2>Features</h2>
+            <ul>
+                <li>Responsive design</li>
+                <li>Auto SEO</li>
+                <li>Advanced features</li>
+            </ul>
+            <h2>Commands</h2>
+            <ul>
+                <li>/start - Start the bot</li>
+                <li>/help - Show help</li>
+                <li>/echo - Echo a message</li>
+            </ul>
+            <h2>Logs</h2>
+            <div id="logs"></div>
+        </div>
+        <div class="footer">
+            &copy; 2023 Likhon Explorer
+        </div>
+    </div>
     <script>
         const token = '7601570950:AAHQJwWLnWAUMAGJDjcktKrNFOKklETKgFI';
         const botUrl = `https://api.telegram.org/bot${token}/`;
-
-        const startBtn = document.getElementById('start-btn');
-        const botContainer = document.getElementById('bot-container');
         const logsDiv = document.getElementById('logs');
-
-        startBtn.addEventListener('click', startBot);
-
-        function startBot() {
-            fetch(`${botUrl}setWebhook?url=https://your-domain.com/webhook`)
-               .then(response => response.json())
-               .then(data => {
-                    console.log(data);
-                    botContainer.innerHTML = `Bot started!`;
-                })
-               .catch(error => console.error(error));
-        }
 
         // Define bot commands
         const commands = {
@@ -91,16 +149,16 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: chatId, text: text })
             })
-               .then(response => response.json())
-               .then(data => console.log(data))
-               .catch(error => console.error(error));
+              .then(response => response.json())
+              .then(data => console.log(data))
+              .catch(error => console.error(error));
         }
 
         // Get updates from Telegram
         setInterval(() => {
             fetch(`${botUrl}getUpdates`)
-               .then(response => response.json())
-               .then(data => {
+              .then(response => response.json())
+              .then(data => {
                     if (data.result.length > 0) {
                         const lastUpdate = data.result[data.result.length - 1];
                         const msg = lastUpdate.message;
@@ -108,7 +166,7 @@
                         logsDiv.innerHTML += `<pre>${JSON.stringify(msg, null, 2)}</pre>`;
                     }
                 })
-               .catch(error => console.error(error));
+              .catch(error => console.error(error));
         }, 1000);
     </script>
 </body>
