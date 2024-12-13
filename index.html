@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #bot-container {
+            width: 50%;
+            margin: 40px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #start-btn {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #start-btn:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <h1>Telegram Bot</h1>
+    <button id="start-btn">Start Bot</button>
+    <div id="bot-container"></div>
+    <div id="logs"></div>
+
+    <script>
+        const token = '7601570950:AAHQJwWLnWAUMAGJDjcktKrNFOKklETKgFI';
+        const botUrl = `https://api.telegram.org/bot${token}/`;
+
+        const startBtn = document.getElementById('start-btn');
+        const botContainer = document.getElementById('bot-container');
+        const logsDiv = document.getElementById('logs');
+
+        startBtn.addEventListener('click', startBot);
+
+        function startBot() {
+            fetch(`${botUrl}setWebhook?url=https://your-domain.com/webhook`)
+               .then(response => response.json())
+               .then(data => {
+                    console.log(data);
+                    botContainer.innerHTML = `Bot started!`;
+                })
+               .catch(error => console.error(error));
+        }
+
+        // Define bot commands
+        const commands = {
+            '/start': (msg) => {
+                return 'Hello! I\'m your bot.';
+            },
+            '/help': (msg) => {
+                return 'Available commands: /start, /help, /echo <message>';
+            },
+            '/echo': (msg) => {
+                const message = msg.text.split(' ').slice(1).join(' ');
+                return `You said: ${message}`;
+            }
+        };
+
+        // Handle incoming messages
+        function handleMessage(msg) {
+            const command = msg.text.split(' ')[0];
+            if (commands[command]) {
+                const response = commands[command](msg);
+                sendResponse(response, msg.chat.id);
+            } else {
+                sendResponse('Unknown command. Type /help for available commands.', msg.chat.id);
+            }
+        }
+
+        // Send response to user
+        function sendResponse(text, chatId) {
+            fetch(`${botUrl}sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: chatId, text: text })
+            })
+               .then(response => response.json())
+               .then(data => console.log(data))
+               .catch(error => console.error(error));
+        }
+
+        // Get updates from Telegram
+        setInterval(() => {
+            fetch(`${botUrl}getUpdates`)
+               .then(response => response.json())
+               .then(data => {
+                    if (data.result.length > 0) {
+                        const lastUpdate = data.result[data.result.length - 1];
+                        const msg = lastUpdate.message;
+                        handleMessage(msg);
+                        logsDiv.innerHTML += `<pre>${JSON.stringify(msg, null, 2)}</pre>`;
+                    }
+                })
+               .catch(error => console.error(error));
+        }, 1000);
+    </script>
+</body>
+</html>
